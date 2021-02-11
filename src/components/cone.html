@@ -7,15 +7,9 @@
 
     <body style='margin : 0px; overflow: hidden;'>
         <a-scene embedded arjs='sourceType: webcam;'>
-            <!-- List of assets to be used inside our html file -->
-            <a-assets>
-                <a-asset-item id="skull" src="https://github.com/rajaben-ali/files/blob/main/gltfs/skull/scene.gltf"></a-asset-item>
-            </a-assets>
-
-            <a-entity gltf-model="#skull" animation-mixer></a-entity>
-
+            <a-cone color="tomato" radius-bottom="2" radius-top="0.5"></a-cone>
             <!-- Marker targert to detect with preset="hiro"-->
-            <a-marker-camera preset='kanji'></a-marker-camera>
+            <a-marker-camera preset='hiro'></a-marker-camera>
         </a-scene>
     </body>
 </html>
