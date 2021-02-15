@@ -1,0 +1,66 @@
+<head>
+  <title>Audio Controlled by Image detection in A-frame - functional</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+
+  <!-- customizes scripts -->
+  <script>
+    //To avoid playing from start if the marker flickers, not sure if needed, but it might be a failsafe when you have mutiple markers and want to make sure the first finishes before launching the second
+    var playing = false;
+
+    //HTML5 audio, will need user touch input to start on mobile
+    var sound1 = new Audio("https://cdn.jsdelivr.net/gh/rajaben-ali/files/sound/sound1.mp3");
+
+    function stopAudio(audio) {
+      console.log("stopAudio called and in function");
+      audio.pause();
+      audio.currentTime = 0;
+      playing = false;
+    }
+
+    AFRAME.registerComponent('markerhandler', {
+      init: function() {
+        // Set up the tick throttling. Will check if marker is active every 500ms
+        this.tick = AFRAME.utils.throttleTick(this.tick, 500, this);
+      },
+      tick: function(t, dt) {
+
+        if (document.querySelector("#hiro").object3D.visible == true && playing == false) {
+          console.log("foundddddd ######");
+          // MARKER IS PRESENT
+          sound1.play();
+          playing = true;
+        } else {
+          console.log("not found######");
+
+          if (document.querySelector("#hiro").object3D.visible == false) {
+            console.log("Calling stopAudio!!!!!!!");
+            stopAudio(sound1);
+          }
+          // MARKER IS HIDDEN, do nothing (up to you)
+        }
+
+      }
+    });
+  </script>
+</head>
+
+<body style="margin : 0px; overflow: hidden;">
+  <!-- minimal loader shown until image descriptors are loaded -->
+  <div class="arjs-loader">
+    <div>Loading, please wait...</div>
+  </div>
+  <a-scene
+    vr-mode-ui="enabled: false;"
+    renderer="logarithmicDepthBuffer: true;"
+    embedded
+    arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;"
+    markerhandler
+    id="hiro-scene"
+  >
+    <!-- we use cors proxy to avoid cross-origin problems -->
+    <a-marker markerhandler cursor="rayOrigin: mouse" emitevents="true" preset='hiro' id="hiro"></a-marker>
+    <a-entity camera></a-entity>
+  </a-scene>
+</body>
