@@ -19,6 +19,12 @@
       playing = false;
     }
 
+    function startAudio(audio) {
+      console.log("startAudio called and in function");
+      audio.play();
+      playing = true;
+    }
+
     AFRAME.registerComponent('markerhandler', {
       init: function() {
         // Set up the tick throttling. Will check if marker is active every 500ms
@@ -29,8 +35,7 @@
         if (document.querySelector("#hiro").object3D.visible == true && playing == false) {
           console.log("foundddddd ######");
           // MARKER IS PRESENT
-          sound1.play();
-          playing = true;
+          startAudio(sound1);
         } else {
           console.log("not found######");
 
