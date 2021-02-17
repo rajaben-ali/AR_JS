@@ -1,0 +1,106 @@
+<head>
+  <title>Audio Controlled by Image detection in A-frame - functional</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+
+  <!-- customizes scripts -->
+  <script>
+    //To avoid playing from start if the marker flickers, not sure if needed, but it might be a failsafe when you have mutiple markers and want to make sure the first finishes before launching the second
+    var playing = false;
+
+    //HTML5 audio, will need user touch input to start on mobile
+    var hiroSound = new Audio("https://cdn.jsdelivr.net/gh/rajaben-ali/files/sound/sound1.mp3");
+    var kanjiSound = new Audio("https://cdn.jsdelivr.net/gh/rajaben-ali/files/sound/taemin-move.mp3");
+    var currentSound = "";
+
+    function stopAudio(audio) {
+      console.log("stopAudio called and in function");
+      audio.pause();
+      audio.currentTime = 0;
+      playing = false;
+    }
+
+    function startAudio(audio) {
+      console.log("startAudio called and in function");
+      audio.volume = 0.05;
+      audio.play();
+      playing = true;
+    }
+
+    function getMarkerDetectionStatus(markerId) {
+      return document.querySelector(markerId).object3D.visible;
+    }
+
+    AFRAME.registerComponent('soundhandler', {
+      init: function() {
+        // Set up the tick throttling. Will check if marker is active every 500ms
+        this.tick = AFRAME.utils.throttleTick(this.tick, 500, this);
+      },
+      tick: function(t, dt) {
+
+        if (!playing) {
+          if (document.querySelector("#kanji").object3D.visible) {
+            // KANJI MARKER IS PRESENT
+            // play kanji audio
+            startAudio(kanjiSound);
+            currentSound = "kanji";
+          }
+          else if (document.querySelector("#hiro").object3D.visible) {
+            // HIRO MARKER IS PRESENT
+            // play hiro audio
+            startAudio(hiroSound);
+            currentSound = "hiro";
+          }
+        } else {
+          switch (currentSound) {
+            case 'kanji':
+              if (getMarkerDetectionStatus('#kanji') == false)
+                stopAudio(kanjiSound);
+              break;
+            case 'hiro':
+              if (getMarkerDetectionStatus('#hiro') == false)
+                stopAudio(hiroSound);
+              break;
+            default:
+              break;
+          }
+        }
+
+      }
+    });
+  </script>
+</head>
+
+<body style="margin : 0px; overflow: hidden;">
+  <!-- minimal loader shown until image descriptors are loaded -->
+  <div class="arjs-loader">
+    <div>Loading, please wait...</div>
+  </div>
+  <a-scene
+    vr-mode-ui="enabled: false;"
+    renderer="logarithmicDepthBuffer: true;"
+    embedded
+    arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;"
+  >
+    <!-- hiro marker -->
+    <a-marker soundhandler cursor="rayOrigin: mouse" emitevents="true" preset='hiro' id="hiro">
+      <!-- Display following on hiro marker detected -->
+      <a-entity
+        text="value: Hello, I am the Hiro marker!; color: #BBB"
+        position="2 0 -2"
+        scale="10 10 10"></a-entity>
+    </a-marker>
+
+    <!-- kanji marker -->
+    <a-marker soundhandler cursor="rayOrigin: mouse" emitevents="true" preset='kanji' id="kanji">
+      <!-- Display following on kanji marker detected -->
+      <a-entity
+        text="value: Hello, I am the Kanji marker!; color: #BBB"
+        position="2 0 -2"
+        scale="10 10 10"
+      ></a-entity>
+    </a-marker>
+    <a-entity camera></a-entity>
+  </a-scene>
+</body>

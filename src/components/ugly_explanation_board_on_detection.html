@@ -1,0 +1,31 @@
+<head>
+  <title>A-Frame WebVR: Text</title>
+	<script src="https://rawgit.com/bryik/aframe-bmfont-text-component/master/dist/aframe-bmfont-text-component.js"></script>
+</head>
+
+<body>
+  <a-scene>
+		<a-assets>
+			<img id="buybutton" src="https://dl.dropboxusercontent.com/u/103458738/VrHost/AframeStore/button_add_cart_info.png" crossorigin='anonymous'>
+			<img id="moreinfo" src="https://dl.dropboxusercontent.com/u/103458738/VrHost/AframeStore/learn_more_black_icon.png" crossorigin='anonymous'>
+		</a-assets>
+    <!-- CAMERA -->
+     <a-entity camera position="0 0 0" look-controls wasd-controls="enabled: false;"></a-entity>
+
+    <!--  BACKGROUND  -->
+		<a-plane position="0 0 -3" color="#ffffff" height="4" width="8"></a-plane>
+		<!--  CHILD ELEMENTS  -->
+		<a-image position="2.58 -1.3 -2.9" height="0.7" width="2" src="#buybutton"></a-image>
+		<a-image position="2.58 -0.4 -2.9" height="0.6" width="1.8" src="#moreinfo"></a-image>
+		<a-image position="-1.23 -0.3 -2.9" height="3" width="5"></a-image>
+
+		<a-entity position="-3.65 0.75 -2.9" bmfont-text="color: orange; text: Price: ; align: right;" rotation="" scale="1.2 1.2 1.2" visible="">
+	</a-entity>
+		<a-entity position="2.5 0.75 -2.9" bmfont-text="color: red; text: $48.95; align: left;" rotation="" scale="2 2 2" visible="">
+	</a-entity>
+
+	<a-entity position="-5.5 1.5 -2.9" bmfont-text="color: black; text: Frodo's second fav ring; align: center;" rotation="" scale="2.2 2.2 2.2" visible="">
+	</a-entity>
+
+  </a-scene>
+</body>
