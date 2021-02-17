@@ -86,13 +86,19 @@
     <!-- hiro marker -->
     <a-marker soundhandler cursor="rayOrigin: mouse" emitevents="true" preset='hiro' id="hiro">
       <!-- Display following on hiro marker detected -->
-      <a-box position='0 0.5 0' material='color: yellow;' ></a-box>
+      <a-entity gltf-model="url(/path/to/tree.gltf)"></a-entity>
     </a-marker>
 
     <!-- kanji marker -->
     <a-marker soundhandler cursor="rayOrigin: mouse" emitevents="true" preset='kanji' id="kanji">
       <!-- Display following on kanji marker detected -->
-      <a-box position='0 0.5 0' material='color: red;'></a-box>
+      <a-entity scale=".5 .5 .5"  position="-0 2 -5">
+        <a-entity
+          gltf-model="https://cdn.jsdelivr.net/gh/rajaben-ali/files/gltfs/skull/scene.gltf"
+          scale="-1 1 1"
+        >
+        </a-entity>
+      </entity>
     </a-marker>
     <a-entity camera></a-entity>
   </a-scene>
