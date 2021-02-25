@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- AR.js by @jerome_etienne - github: https://github.com/jeromeetienne/ar.js - info: https://medium.com/arjs/augmented-reality-in-10-lines-of-html-4e193ea9fdbf -->
+  <script src="https://aframe.io/releases/0.6.0/aframe.min.js"></script>
+<script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.5.0/aframe/build/aframe-ar.js"></script>
+  <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.8.4/dist/aframe-extras.min.js"></script>
+
+  <script src="https://rawgit.com/mayognaise/aframe-gif-shader/master/dist/aframe-gif-shader.min.js"></script>
+  <script>
+    var playing = false;
+    var currentVideo = "";
+
+    function stopVideo(video) {
+      console.log("stopVideo called and in function");
+      video.pause();
+      video.currentTime = 0;
+      playing = false;
+      currentVideo = "";
+    }
+    function startVideo(video) {
+      console.log("startVideo called and in function");
+      video.play();
+      playing = true;
+    }
+
+    function getMarkerDetectionStatus(markerId) {
+      return document.querySelector(markerId).object3D.visible;
+    }
+
+    AFRAME.registerComponent('videohandler', {
+      init: function() {
+        // Set up the tick throttling. Will check if marker is active every 500ms
+        this.tick = AFRAME.utils.throttleTick(this.tick, 500, this);
+        this.hiroVideo = document.querySelector("#hiro-video")
+        this.kanjiVideo = document.querySelector("#kanji-video")
+        this.hiroVideo.pause();
+        this.kanjiVideo.pause();
+      },
+      tick: function(t, dt) {
+
+        if (!playing) {
+          if (document.querySelector("#kanji").object3D.visible) {
+            // KANJI MARKER IS PRESENT
+            // play kanji video
+            startVideo(this.kanjiVideo);
+            currentVideo = "kanji";
+          }
+          else if (document.querySelector("#hiro").object3D.visible) {
+            // HIRO MARKER IS PRESENT
+            // play hiro video
+            startVideo(this.hiroVideo);
+            currentVideo = "hiro";
+          }
+        } else {
+          switch (currentVideo) {
+            case 'kanji':
+              if (getMarkerDetectionStatus('#kanji') == false)
+                stopVideo(this.kanjiVideo);
+              break;
+            case 'hiro':
+              if (getMarkerDetectionStatus('#hiro') == false)
+                stopVideo(this.hiroVideo);
+              break;
+            default:
+              break;
+          }
+        }
+      }
+    });
+  </script>
+
+</head>
+
+<body style='margin : 0px; overflow: hidden;'>
+  <a-scene embedded artoolkit='sourceType: webcam; detectionMode: mono; maxDetectionRate: 30; canvasWidth: 240; canvasHeight: 180' >
+    <a-assets>
+      <video id="hiro-video" src="https://cdn.jsdelivr.net/gh/rajaben-ali/files/videos/The_Umbrella_Academy_Official_Trailer.mp4" crossorigin>
+      <video id="kanji-video" src="https://cdn.jsdelivr.net/gh/rajaben-ali/files/videos/The_Umbrella_Academy_Official_Trailer.mp4" crossorigin>
+    </a-assets>
+
+    <a-marker preset="kanji" videohandler id="kanji">
+      <a-plane position='1 2 -2' scale="2 2 2" width="2" rotation="-30 0 0" material='transparent:true;opacity: 1;src:#kanji-video'></a-plane>
+    </a-marker>
+    <a-marker preset="hiro" videohandler id="hiro">
+      <a-plane position='1 2 -2' scale="2 2 2" width="2" rotation="-30 0 0" material='transparent:true;opacity: 1;src:#hiro-video'></a-plane>
+    </a-marker>
+
+    <a-entity camera position="0 2 5"></a-entity>
+  </a-scene>
+</body>
+
+
+</html>
